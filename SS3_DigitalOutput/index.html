@@ -1,0 +1,57 @@
+int ledPins[] = {2, 3, 4, 5};
+int waitTime = 200;
+int totalPatterns = 6;
+bool systemActive = true;
+
+void setup() {
+  for (int i = 0; i < 4; i++) {
+    pinMode(ledPins[i], OUTPUT);
+  }
+}
+
+void loop() {
+  if (systemActive == true && waitTime > 50) {
+    setAll(HIGH);
+    delay(1000); 
+
+    setAll(LOW);
+    delay(waitTime);
+
+    for (int i = 0; i < 4; i++) {
+      digitalWrite(ledPins[i], HIGH);
+      delay(waitTime);
+      digitalWrite(ledPins[i], LOW);
+    }
+
+    for (int i = 3; i >= 0; i--) {
+      digitalWrite(ledPins[i], HIGH);
+      delay(waitTime);
+      digitalWrite(ledPins[i], LOW);
+    }
+
+    for (int i = 0; i < 3; i++) {
+      setAll(HIGH);
+      delay(100);
+      setAll(LOW);
+      delay(100);
+    }
+
+    digitalWrite(ledPins[0], HIGH); 
+    digitalWrite(ledPins[3], HIGH);
+    delay(500);
+    setAll(LOW);
+    digitalWrite(ledPins[1], HIGH); 
+    digitalWrite(ledPins[2], HIGH);
+    delay(500);
+    setAll(LOW);
+
+  } else {
+    setAll(LOW); 
+  }
+}
+
+void setAll(int state) {
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(ledPins[i], state);
+  }
+}
