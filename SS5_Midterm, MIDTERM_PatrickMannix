@@ -1,0 +1,54 @@
+const { Board, Five, Sensor, Button, Led, Servo, Piezo } = require("johnny-five");
+const board = new Board();
+
+board.on("ready", () => {
+  const pot = new Sensor("A0");
+  const ldr = new Sensor("A1");
+  const touch = new Sensor("A2");
+  const btn = new Button(2);
+  const pwmLed = new Led(3);
+  const digitalLed = new Led(4);
+  const servo = new Servo(9);
+  const piezo = new Piezo(10);
+
+  let systemActive = false;
+  let lastUpdate = 0;
+  let interval = 1000;
+  let brightnessValues = [64, 128, 192, 255];
+
+  btn.on("down", () => {
+    systemActive = !systemActive;
+  });
+
+  board.loop(50, () => {
+    let now = millis();
+    let potVal = pot.value;
+    let lightLevel = ldr.value;
+    let isTouched = touch.value > 500;
+
+    if (systemActive && (isTouched || potVal > 200)) {
+      digitalLed.on();
+
+      let mappedAngle = Math.floor((potVal / 1023) * 180);
+      servo.to(mappedAngle);
+
+      let pulseIndex = Math.floor((lightLevel / 1024) * brightnessValues.length);
+      pwmLed.brightness(brightnessValues[pulseIndex]);
+
+      if (now - lastUpdate >= interval) {
+        lastUpdate = now;
+        for (let i = 0; i < 3; i++) {
+          piezo.play({ pitch: "C4", duration: 100 });
+        }
+      }
+    } else {
+      digitalLed.off();
+      pwmLed.off();
+      servo.home();
+    }
+  });
+});
+
+function millis() {
+  return Date.now();
+}
