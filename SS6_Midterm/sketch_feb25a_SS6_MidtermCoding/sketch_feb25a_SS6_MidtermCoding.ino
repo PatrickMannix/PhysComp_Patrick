@@ -16,7 +16,7 @@ let lastUpdate = 0;
 let interval = 1000;
 let brightnessArray = [0, 85, 170, 255]; 
 
-function setup() {
+void setup() {
   pinMode(btnPin, "INPUT_PULLUP");
   pinMode(digitalLedPin, "OUTPUT");
   pinMode(pwmLedPin, "OUTPUT");
@@ -27,7 +27,7 @@ function setup() {
   analogReadResolution(12); 
 }
 
-function loop() {
+void loop() {
   let now = millis();
   
   
